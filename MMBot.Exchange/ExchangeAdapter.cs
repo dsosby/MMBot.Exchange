@@ -36,13 +36,13 @@ namespace MMBot.Exchange
         public override Async.Task Close()
         {
             Logger.Info("Closing Exchange adapter connection");
-            throw new NotImplementedException();
+            //TODO: STop watching messages
         }
 
         public override Async.Task Run()
         {
             Logger.Info("Starting Exchange adapter connection");
-            throw new NotImplementedException();
+            //TODO: Poll or setup push to watch for messages in inbox
         }
 
         //TODO: Send, Reply, Emote
