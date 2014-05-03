@@ -1,14 +1,17 @@
 ﻿using Common.Logging;
+using Microsoft.Exchange.WebServices.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using Async = System.Threading.Tasks;
 
 namespace MMBot.Exchange
 {
     public class ExchangeAdapter : Adapter
     {
+        private ExchangeService _service;
+
         public ExchangeAdapter(ILog logger, string adapterId)
             : base(logger, adapterId)
         {
@@ -22,21 +25,31 @@ namespace MMBot.Exchange
 
         private void Configure()
         {
-            //TODO: Configuration
+            string email = "dasosby@microsoft.com";
+            string pass = "India;juliet";
+
+            _service = new ExchangeService();
+            _service.Credentials = new WebCredentials(email, pass);
+            _service.AutodiscoverUrl(email, RedirectionUrlValidationCallback);
         }
 
-        public override Task Close()
+        public override Async.Task Close()
         {
             Logger.Info("Closing Exchange adapter connection");
             throw new NotImplementedException();
         }
 
-        public override Task Run()
+        public override Async.Task Run()
         {
             Logger.Info("Starting Exchange adapter connection");
             throw new NotImplementedException();
         }
 
         //TODO: Send, Reply, Emote
+
+        private static bool RedirectionUrlValidationCallback(string redirectionUrl)
+        {
+            return new Uri(redirectionUrl).Scheme == "https";
+        }
     }
 }
