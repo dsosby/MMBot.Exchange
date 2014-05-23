@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>MMBot.Exchange</id>
+        <title>MMBot.Exchange</title>
+        <version>0.1.0</version>
+        <authors>David Sosby</authors>
+        <owners>David Sosby</owners>
+        <licenseUrl>https://github.com/dsosby/MMBot.Exchange/blob/master/LICENSE.md</licenseUrl>
+        <projectUrl>https://github.com/dsosby/MMBot.Exchange/</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>An adapter for MMBot for Exchange email messaging</description>
+        <releaseNotes>Initial pre-release version.</releaseNotes>
+        <copyright>Copyright 2014</copyright>
+        <tags>hubot mmbot chat robot bot exchange email mail</tags>
+        <dependencies>
+            <dependency id="Common.Logging" version="2.1.2" />
+            <dependency id="ScriptCs.Contracts" version="0.8.0" />
+            <dependency id="EWS-Api-2.0" version="1.0.1" />
+        </dependencies>
+    </metadata>
+</package>
