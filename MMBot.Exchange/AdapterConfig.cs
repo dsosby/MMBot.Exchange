@@ -45,6 +45,11 @@ namespace MMBot.Exchange
         /// </summary>
         public int MaxRetry { get; set; }
 
+        /// <summary>
+        /// Get or set the number of minutes to hold the EWS subscription open.
+        /// </summary>
+        public int SubscriptionLifetime { get; set; }
+
         public AdapterConfig(Robot robot)
         {
             Email = robot.GetConfigVariable("MMBOT_EXCHANGE_EMAIL");
@@ -54,6 +59,7 @@ namespace MMBot.Exchange
             AllowImplicitCommand = GetConfig<bool>("MMBOT_EXCHANGE_ALLOWIMPLICITCOMMAND", true);
             UseOutlookStyle = GetConfig<bool>("MMBOT_EXCHANGE_USEOUTLOOKSTYLE", true);
             MaxRetry = GetConfig<int>("MMBOT_EXCHANGE_MAXRETRY", 5);
+            SubscriptionLifetime = GetConfig<int>("MMBOT_EXCHANGE_SUBSCRIPTIONLIFETIME", 5);
 
             //TODO: Folder? Subject filter? From domain filter? Subscription timeout?
         }

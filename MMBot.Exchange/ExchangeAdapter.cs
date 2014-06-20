@@ -64,7 +64,7 @@ namespace MMBot.Exchange
                 new FolderId[] { WellKnownFolderName.Inbox },
                 EventType.NewMail);
 
-            ExchangeConnection = new StreamingSubscriptionConnection(Service, 30);
+            ExchangeConnection = new StreamingSubscriptionConnection(Service, config.SubscriptionLifetime);
             ExchangeConnection.AddSubscription(newMailSubscription);
             ExchangeConnection.OnNotificationEvent += OnExchangeNotification;
             ExchangeConnection.OnDisconnect += OnExchangeDisconnect;
