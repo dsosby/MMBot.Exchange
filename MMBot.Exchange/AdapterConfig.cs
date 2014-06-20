@@ -58,6 +58,8 @@ namespace MMBot.Exchange
 
         public AdapterConfig(IRobotConfigurer configurer)
         {
+            this.configurer = configurer;
+
             Email = Load<string>("MMBOT_EXCHANGE_EMAIL");
             Password = Load<string>("MMBOT_EXCHANGE_PASSWORD");
             ExchangeUrl = Load<string>("MMBOT_EXCHANGE_URL");
