@@ -134,6 +134,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="AdapterConfigTests.cs" />
     <Compile Include="ExchangeAdapterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EmailMessageIsOnlyToMe.cs" />

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MMBot.Exchange
 {
-    class AdapterConfig
+    public class AdapterConfig
     {
         /// <summary>
         /// Get or set the email address of the bot account
