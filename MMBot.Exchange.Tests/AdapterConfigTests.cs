@@ -19,5 +19,35 @@ namespace MMBot.Exchange.Tests
             var config = new AdapterConfig(robot.Object);
             Assert.AreEqual(config.Email, string.Empty);
         }
+
+        [TestMethod]
+        public void GetConfigSafelyConvertsNull()
+        {
+            Assert.AreEqual(false, AdapterConfig.GetConfig<bool>(null));
+        }
+
+        [TestMethod]
+        public void GetConfigUsesDefault()
+        {
+            Assert.AreEqual("foobar", AdapterConfig.GetConfig<string>(null, "foobar"));
+        }
+
+        [TestMethod]
+        public void GetConfigUsesTypeDefault()
+        {
+            Assert.AreEqual(0, AdapterConfig.GetConfig<int>(null));
+        }
+
+        [TestMethod]
+        public void GetConfigHandlesEmptyString()
+        {
+            Assert.AreEqual(0, AdapterConfig.GetConfig<int>(""));
+        }
+
+        [TestMethod]
+        public void GetConfigHandlesBadConversions()
+        {
+            Assert.AreEqual(5, AdapterConfig.GetConfig<int>("not an int", 5));
+        }
     }
 }
