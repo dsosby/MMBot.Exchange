@@ -9,13 +9,7 @@ namespace MMBot.Exchange
 {
     public class ExchangeAdapter : Adapter
     {
-        private string Email { get; set; }
-        private string Password { get; set; }
-        private string ExchangeUrl { get; set; }
-        private bool TrimSignature { get; set; }
-        private bool AllowImplicitCommand { get; set; }
-        private bool UseOutlookStyle { get; set; }
-        private int MaxRetry { get; set; }
+        private AdapterConfig config;
 
         private PropertySet EmailProperties { get; set; }
 
@@ -50,10 +44,10 @@ namespace MMBot.Exchange
         public override void Initialize(Robot robot)
         {
             base.Initialize(robot);
-            Configure();
+            config = new AdapterConfig(robot);
 
-            if (string.IsNullOrEmpty(Email) ||
-                string.IsNullOrEmpty(Password))
+            if (string.IsNullOrEmpty(config.Email) ||
+                string.IsNullOrEmpty(config.Password))
             {
                 Logger.Warn("Exchange Adapter requires MMBOT_EXCHANGE_EMAIL and MMBOT_EXCHANGE_PASSWORD");
                 return;
@@ -61,7 +55,7 @@ namespace MMBot.Exchange
 
             Service = new ExchangeService
             {
-                Credentials = new WebCredentials(Email, Password)
+                Credentials = new WebCredentials(config.Email, config.Password)
             };
 
             InitializeExchangeUrl();
@@ -78,44 +72,17 @@ namespace MMBot.Exchange
 
         private void InitializeExchangeUrl()
         {
-            if (string.IsNullOrEmpty(ExchangeUrl))
+            if (string.IsNullOrEmpty(config.ExchangeUrl))
             {
                 Logger.Info("Autodiscovering Exchange service url...");
-                Service.AutodiscoverUrl(Email);
+                Service.AutodiscoverUrl(config.Email);
             }
             else
             {
-                Service.Url = new System.Uri(ExchangeUrl);
+                Service.Url = new System.Uri(config.ExchangeUrl);
             }
 
             Logger.Info("Exchange service url is " + Service.Url);
-        }
-
-        private void Configure()
-        {
-            Email = Robot.GetConfigVariable("MMBOT_EXCHANGE_EMAIL");
-            Password = Robot.GetConfigVariable("MMBOT_EXCHANGE_PASSWORD");
-            ExchangeUrl = Robot.GetConfigVariable("MMBOT_EXCHANGE_URL");
-            TrimSignature = GetBooleanConfig("MMBOT_EXCHANGE_TRIMSIGNATURE", true);
-            AllowImplicitCommand = GetBooleanConfig("MMBOT_EXCHANGE_ALLOWIMPLICITCOMMAND", true);
-            UseOutlookStyle = GetBooleanConfig("MMBOT_EXCHANGE_USEOUTLOOKSTYLE", true);
-            MaxRetry = GetIntegerConfig("MMBOT_EXCHANGE_MAXRETRY", 5);
-
-            //TODO: Folder? Subject filter? From domain filter? Subscription timeout?
-        }
-
-        private bool GetBooleanConfig(string name, bool defaultValue)
-        {
-            bool value;
-            var success = Boolean.TryParse(Robot.GetConfigVariable(name) ?? "", out value);
-            return success ? value : defaultValue;
-        }
-
-        private int GetIntegerConfig(string name, int defaultValue)
-        {
-            int value;
-            var success = int.TryParse(Robot.GetConfigVariable(name) ?? "", out value);
-            return success ? value : defaultValue;
         }
 
         private void OnExchangeDisconnect(object sender, SubscriptionErrorEventArgs args)
@@ -134,10 +101,10 @@ namespace MMBot.Exchange
             else
             {
                 Logger.Info("Exchange service disconnected: " + IsRunning + " " + args.Exception);
-                if (retryCount < MaxRetry)
+                if (retryCount < config.MaxRetry)
                 {
                     retryCount++;
-                    Logger.Info("Attempting Exchange reconnect: " + retryCount + " of " + MaxRetry);
+                    Logger.Info("Attempting Exchange reconnect: " + retryCount + " of " + config.MaxRetry);
                     ExchangeConnection.Open();
                 }
             }
@@ -166,9 +133,9 @@ namespace MMBot.Exchange
                 Id);
 
             var messageBody = message.UniqueBody.Text.Trim();
-            if (TrimSignature) messageBody = TrimSignatureFromBody(messageBody);
+            if (config.TrimSignature) messageBody = TrimSignatureFromBody(messageBody);
 
-            if (AllowImplicitCommand && message.IsOnlyTo(Email))
+            if (config.AllowImplicitCommand && message.IsOnlyTo(config.Email))
             {
                 if (!messageBody.StartsWith(Robot.Name, StringComparison.InvariantCultureIgnoreCase))
                 {
@@ -222,7 +189,7 @@ namespace MMBot.Exchange
 
             var response = string.Join("<br>", messages);
             response = response.Replace(Environment.NewLine, "<br>");
-            if (UseOutlookStyle) response = WrapInOutlookStyle(response);
+            if (config.UseOutlookStyle) response = WrapInOutlookStyle(response);
             //TODO: Embed local images as inline attachments
 
             Logger.Info(string.Format("Replying to {0}: {1}", replyTo.From.Name, response));
