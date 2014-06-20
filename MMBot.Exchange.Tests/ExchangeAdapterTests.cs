@@ -13,16 +13,6 @@ namespace MMBot.Exchange.Tests
             adapter = new MMBot.Exchange.ExchangeAdapter(null, "");
         }
 
-        [TestMethod]
-        public void CanInitializeWithNullRobot()
-        {
-            adapter.Initialize(null);
-        }
-
-        [TestMethod]
-        public void ShouldSendStartupEmail()
-        {
-            adapter.Run();
-        }
+        //TODO: Tests
     }
 }

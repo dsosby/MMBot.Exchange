@@ -21,33 +21,33 @@ namespace MMBot.Exchange.Tests
         }
 
         [TestMethod]
-        public void GetConfigSafelyConvertsNull()
+        public void ParseConfigSafelyConvertsNull()
         {
-            Assert.AreEqual(false, AdapterConfig.GetConfig<bool>(null));
+            Assert.AreEqual(false, AdapterConfig.ParseConfig<bool>(null));
         }
 
         [TestMethod]
-        public void GetConfigUsesDefault()
+        public void ParseConfigUsesDefault()
         {
-            Assert.AreEqual("foobar", AdapterConfig.GetConfig<string>(null, "foobar"));
+            Assert.AreEqual("foobar", AdapterConfig.ParseConfig<string>(null, "foobar"));
         }
 
         [TestMethod]
-        public void GetConfigUsesTypeDefault()
+        public void ParseConfigUsesTypeDefault()
         {
-            Assert.AreEqual(0, AdapterConfig.GetConfig<int>(null));
+            Assert.AreEqual(0, AdapterConfig.ParseConfig<int>(null));
         }
 
         [TestMethod]
-        public void GetConfigHandlesEmptyString()
+        public void ParseConfigHandlesEmptyString()
         {
-            Assert.AreEqual(0, AdapterConfig.GetConfig<int>(""));
+            Assert.AreEqual(0, AdapterConfig.ParseConfig<int>(""));
         }
 
         [TestMethod]
-        public void GetConfigHandlesBadConversions()
+        public void ParseConfigHandlesBadConversions()
         {
-            Assert.AreEqual(5, AdapterConfig.GetConfig<int>("not an int", 5));
+            Assert.AreEqual(5, AdapterConfig.ParseConfig<int>("not an int", 5));
         }
     }
 }

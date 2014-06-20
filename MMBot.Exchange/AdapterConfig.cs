@@ -50,21 +50,32 @@ namespace MMBot.Exchange
         /// </summary>
         public int SubscriptionLifetime { get; set; }
 
+        private IRobotConfigurer configurer;
+
         public AdapterConfig(Robot robot)
+            : this(new RobotConfigImpl() { Robot = robot })
+        { }
+
+        public AdapterConfig(IRobotConfigurer configurer)
         {
-            Email = robot.GetConfigVariable("MMBOT_EXCHANGE_EMAIL");
-            Password = robot.GetConfigVariable("MMBOT_EXCHANGE_PASSWORD");
-            ExchangeUrl = robot.GetConfigVariable("MMBOT_EXCHANGE_URL");
-            TrimSignature = GetConfig<bool>("MMBOT_EXCHANGE_TRIMSIGNATURE", true);
-            AllowImplicitCommand = GetConfig<bool>("MMBOT_EXCHANGE_ALLOWIMPLICITCOMMAND", true);
-            UseOutlookStyle = GetConfig<bool>("MMBOT_EXCHANGE_USEOUTLOOKSTYLE", true);
-            MaxRetry = GetConfig<int>("MMBOT_EXCHANGE_MAXRETRY", 5);
-            SubscriptionLifetime = GetConfig<int>("MMBOT_EXCHANGE_SUBSCRIPTIONLIFETIME", 5);
+            Email = Load<string>("MMBOT_EXCHANGE_EMAIL");
+            Password = Load<string>("MMBOT_EXCHANGE_PASSWORD");
+            ExchangeUrl = Load<string>("MMBOT_EXCHANGE_URL");
+            TrimSignature = Load<bool>("MMBOT_EXCHANGE_TRIMSIGNATURE", true);
+            AllowImplicitCommand = Load<bool>("MMBOT_EXCHANGE_ALLOWIMPLICITCOMMAND", true);
+            UseOutlookStyle = Load<bool>("MMBOT_EXCHANGE_USEOUTLOOKSTYLE", true);
+            MaxRetry = Load<int>("MMBOT_EXCHANGE_MAXRETRY", 5);
+            SubscriptionLifetime = Load<int>("MMBOT_EXCHANGE_SUBSCRIPTIONLIFETIME", 5);
 
             //TODO: Folder? Subject filter? From domain filter? Subscription timeout?
         }
 
-        public static T GetConfig<T>(string configValue, T defaultValue = default(T))
+        private T Load<T>(string configName, T defaultValue = default(T))
+        {
+            return ParseConfig<T>(configurer.GetConfigVariable(configName), defaultValue);
+        }
+
+        public static T ParseConfig<T>(string configValue, T defaultValue = default(T))
         {
             if (configValue == null) return defaultValue;
 
@@ -80,5 +91,17 @@ namespace MMBot.Exchange
 
             return defaultValue;
         }
+    }
+
+    public interface IRobotConfigurer
+    {
+        string GetConfigVariable(string name);
+    }
+
+    class RobotConfigImpl : IRobotConfigurer
+    {
+        public Robot Robot;
+
+        public string GetConfigVariable(string name) { return Robot.GetConfigVariable(name); }
     }
 }
